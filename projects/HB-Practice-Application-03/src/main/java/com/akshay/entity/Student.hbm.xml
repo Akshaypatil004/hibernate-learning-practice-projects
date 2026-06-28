@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping>
+	<class name="com.akshay.entity.Student" table="student" dynamic-insert="true">
+		<id name="rollno">
+			<generator class="increment"/>
+		</id>
+		<property name="name"/>
+		<property name="address"/>
+		<property name="email"/>
+	</class>
+</hibernate-mapping>
