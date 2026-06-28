@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "https://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	
+	<!-- 	<property name="connection.url">jdbc:oracle:thin:@localhost:1521:orcl</property>
+		<property name="connection.username">hibernatedb</property>
+		<property name="connection.password">1234</property>
+		
+		<property name="connection.url">jdbc:mysql:///hibernate_db</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">Root1234</property> -->
+		
+		<property name="connection.url">jdbc:postgresql://localhost:5432/hibernatedb</property>
+		<property name="connection.username">postgres</property>
+		<property name="connection.password">tiger</property>
+		
+		<!-- mapping file location/configuration -->
+		<mapping resource="com/akshay/entity/Employee.hbm.xml"/>
+	</session-factory>
+</hibernate-configuration>
