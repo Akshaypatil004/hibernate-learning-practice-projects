@@ -2,6 +2,7 @@ package com.akshay.app;
 
 import java.util.Scanner;
 
+import com.akshay.dto.BookPriceUpdateResult;
 import com.akshay.entity.Book;
 import com.akshay.service.LibraryService;
 import com.akshay.util.HBUtil;
@@ -21,7 +22,7 @@ public class LibraryBookManagementApp {
     		   System.out.println("=".repeat(50));
     		   System.out.println("1. Add Book");
     		   System.out.println("2. Search Book");
-    		   System.out.println("3. Update Book Price");
+    		   System.out.println("3. Update book price");
     		   System.out.println("4. Delete Book");
     		   System.out.println("5. exit");
     		   System.out.println("=".repeat(50));
@@ -54,6 +55,7 @@ public class LibraryBookManagementApp {
     			   else {
     				   book.setAvailable(false);
     			   }
+    			   System.out.println("=".repeat(50));
     			   int bookId = service.addBook(book);
     			   System.out.println("Book Saved Successfully!");
     			   System.out.println("Generated Book ID : " + bookId);
@@ -63,6 +65,7 @@ public class LibraryBookManagementApp {
     			   System.out.println("=".repeat(50));
     			   System.out.println("Enter book ID: ");
     			   bookId = sc.nextInt();
+    			   System.out.println("=".repeat(50));
     			   
 				   service.search(bookId).ifPresentOrElse(b -> {
 					   System.out.println("Book Found");
@@ -83,10 +86,11 @@ public class LibraryBookManagementApp {
     			   		   
     			   System.out.println("Enter New Price:");
     			   double newPrice = sc.nextDouble();
+    			   System.out.println("=".repeat(50));
     			   
-    			   service.search(bookId).ifPresent(b -> System.out.println("Old Price: "+b.getPrice()));
-    			   service.updateBookPrice(bookId, newPrice);
-    			   System.out.println("New Price: " + newPrice);
+    			   BookPriceUpdateResult updateBook = service.updateBookPrice(bookId, newPrice);
+    			   System.out.println("Old Price: " + updateBook.getOldPrice());
+    			   System.out.println("New Price: " + updateBook.getNewPrice());
     			   System.out.println("Book Updated Successfully");
     			   System.out.println("=".repeat(50));
     			   break;
@@ -116,9 +120,6 @@ public class LibraryBookManagementApp {
     	   
        }
        catch(Exception e) {
-    	   System.err.println(e.getLocalizedMessage());
-       }
-       catch(Throwable e) {
     	   System.err.println(e.getLocalizedMessage());
        }
        finally {
