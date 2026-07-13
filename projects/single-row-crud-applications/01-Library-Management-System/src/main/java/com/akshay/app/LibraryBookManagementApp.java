@@ -89,8 +89,8 @@ public class LibraryBookManagementApp {
     			   System.out.println("=".repeat(50));
     			   
     			   BookPriceUpdateResult updateBook = service.updateBookPrice(bookId, newPrice);
-    			   System.out.println("Old Price: " + updateBook.getOldPrice());
-    			   System.out.println("New Price: " + updateBook.getNewPrice());
+    			   System.out.println("Old Price: " + updateBook.oldPrice());
+    			   System.out.println("New Price: " + updateBook.newPrice());
     			   System.out.println("Book Updated Successfully");
     			   System.out.println("=".repeat(50));
     			   break;

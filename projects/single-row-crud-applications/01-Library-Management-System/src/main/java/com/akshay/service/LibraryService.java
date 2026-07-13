@@ -84,7 +84,6 @@ public class LibraryService {
 		if (bookId <= 0 || newPrice <= 0) {
 			throw new IllegalArgumentException("ERROR - Invalid book id and new price !!");
 		}
-		BookPriceUpdateResult result = null;
 		Transaction tx = null;
 		try (Session session = HBUtil.getSession()) {
 			tx = session.beginTransaction();
@@ -95,21 +94,17 @@ public class LibraryService {
 				throw new BookNotFoundException("Book not found");
 			}
 			// DTO object represent result
-			result = new BookPriceUpdateResult();
-			result.setBookId(bookId);
-			result.setOldPrice(book.getPrice());
-			result.setNewPrice(newPrice);
-			
+			BookPriceUpdateResult result = new BookPriceUpdateResult(bookId,book.getPrice(),newPrice);
 			// update  new price
 			book.setPrice(newPrice);
 			tx.commit();
+			return result;
 		} catch (HibernateException e) {
 			if (tx != null) {
 				tx.rollback();
 			}
 			throw new RuntimeException("failed to update the book !", e);
 		}
-		return result;
 	}
 
 	/**

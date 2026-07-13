@@ -23,10 +23,6 @@ public final class HBUtil {
 		}
 	}
 	
-	public static SessionFactory getSessionFactory() {
-		return FACTORY;
-	}
-	
 	public static Session getSession() {
 		return FACTORY.openSession();
 	}
