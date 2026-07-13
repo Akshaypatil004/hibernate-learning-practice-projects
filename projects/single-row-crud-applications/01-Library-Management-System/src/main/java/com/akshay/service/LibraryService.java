@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.akshay.entity.Book;
+import com.akshay.exception.BookNotFoundException;
 import com.akshay.util.HBUtil;
 
 /**
@@ -18,9 +19,13 @@ public class LibraryService {
 	/**
 	 * Add book to the library system 
 	 * @param book - accept book (object)
-	 * @return nothing  
+	 * @return int - return book id on successful persist operation   
 	 */
-	public void addBook(Book book) {
+	public int addBook(Book book) {
+		// input validation 
+		if(book == null) {
+			throw new IllegalArgumentException("ERROR - Book should not be null");
+		}
 		Transaction tx  = null;
 		try(Session session = HBUtil.getSession()){
 			tx = session.beginTransaction();
@@ -31,12 +36,14 @@ public class LibraryService {
 			
 			tx.commit();
 			
+			return book.getBookId();
+			
 		}// when session close object move to detach state
 		catch(HibernateException e) {
-			if(tx != null && tx.getRollbackOnly() && tx.getStatus() != null) {
+			if(tx != null) {
 				tx.rollback();
 			}
-			throw new IllegalArgumentException("Something went wrong !!",e);
+			throw new RuntimeException("something went wrong !",e);
 		}
 	}
 	
@@ -46,6 +53,10 @@ public class LibraryService {
 	 * @return optional - if book available then return optional containing (book) otherwise null
 	 */
 	public Optional<Book> search(int bookId){
+		// input validation 
+		if(bookId <= 0) {
+			throw new IllegalArgumentException("ERROR - invalid book id");
+		}
 		try(Session session = HBUtil.getSession()){
 			
 			Book book = session.find(Book.class, bookId);
@@ -54,7 +65,7 @@ public class LibraryService {
 			
 		}
 		catch(HibernateException e) {
-			throw new IllegalArgumentException("Something went wrong !!",e);
+			throw new RuntimeException("something went wrong !",e);
 		}
 	}
 
@@ -65,33 +76,31 @@ public class LibraryService {
 	 * @return nothing 
 	 */
 	public void updateBookPrice(int bookId, double newPrice) {
+		// input validation 
+		if(bookId <= 0 || newPrice <= 0) {
+			throw new IllegalArgumentException("ERROR - Invalid book id and new price !!");
+		}
+		
 		Transaction tx = null;
 		try(Session session = HBUtil.getSession()){
 			tx = session.beginTransaction();
 			
-			Optional<Book> bookFound = search(bookId);
+			// after search return this is detached entity ( not managed by session ) bring back it to persistence state
+			Book book = search(bookId).orElseThrow(() -> new BookNotFoundException("Book not found"));
 			
-			Book book = bookFound.get();
-			if(book != null) {
-				// get old book price 
-				double oldPrice = book.getPrice();
-				// update new price
-				book.setPrice(newPrice);
-				tx.commit();
-				// display message
-				System.out.println("Old Price : " + oldPrice);
-				System.out.println("New Price : " + newPrice);
-				System.out.println("Book updated successfully");
-			}
-			else {
-				System.out.println("Book Not Found !");
-			}
+			// entity comes into persistence state
+			book = session.merge(book);
+	
+			// update book price 
+			book.setPrice(newPrice);
+			
+			tx.commit();
 		}
 		catch(HibernateException e) {
-			if(tx!= null && tx.getRollbackOnly() && tx.getStatus() != null) {
+			if(tx!= null) {
 				tx.rollback();
 			}
-			throw new IllegalArgumentException("something went wrong !",e);
+			throw new RuntimeException("something went wrong !",e);
 		}
 	}
 	
@@ -101,26 +110,30 @@ public class LibraryService {
 	 * @return nothing 
 	 */
 	public void delete(int bookId) {
+		if(bookId <= 0) {
+			throw new IllegalArgumentException("ERROR - invalid book id");
+		}
 		
 		Transaction tx = null;
 		
 		try(Session session = HBUtil.getSession()){
 			tx = session.beginTransaction();
 			
-			Book book = search(bookId).orElseThrow(()-> new IllegalArgumentException("Book not found"));
+			// after search return this is detached entity ( not managed by session ) bring back it to persistence state
+			Book book = search(bookId).orElseThrow(()-> new BookNotFoundException("Book not found"));
+			
+			// entity comes into persistence state
+			book = session.merge(book);
 			
 			session.remove(book);
 			
-			tx.commit();
-			
-			System.out.println("Book Deleted  Successfully");
-			
+			tx.commit();			
 		}
 		catch(HibernateException e) {
-			if(tx != null && tx.getRollbackOnly() && tx.getStatus() != null) {
+			if(tx != null) {
 				tx.rollback();
 			}
-			throw new IllegalArgumentException("Something went wrong !",e);
+			throw new RuntimeException("something went wrong !",e);
 		}
 		
 	}

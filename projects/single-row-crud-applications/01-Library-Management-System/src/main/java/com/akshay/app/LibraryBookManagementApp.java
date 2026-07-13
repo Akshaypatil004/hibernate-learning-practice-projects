@@ -18,17 +18,20 @@ public class LibraryBookManagementApp {
        
        try{
     	   while(true) {
+    		   System.out.println("=".repeat(50));
     		   System.out.println("1. Add Book");
     		   System.out.println("2. Search Book");
     		   System.out.println("3. Update Book Price");
     		   System.out.println("4. Delete Book");
     		   System.out.println("5. exit");
+    		   System.out.println("=".repeat(50));
     		   System.out.println("Enter your choice: ");
     		   int choice = sc.nextInt();
     		   sc.nextLine();
     		   
     		   switch(choice) {
     		   case 1:
+    			   System.out.println("=".repeat(50));
     			   System.out.println("Enter Title: ");
     			   String title = sc.nextLine();
     			   
@@ -51,14 +54,16 @@ public class LibraryBookManagementApp {
     			   else {
     				   book.setAvailable(false);
     			   }
-    			   service.addBook(book);
+    			   int bookId = service.addBook(book);
     			   System.out.println("Book Saved Successfully!");
-    			   System.out.println("Generated Book ID : " + book.getBookId());
+    			   System.out.println("Generated Book ID : " + bookId);
+    			   System.out.println("=".repeat(50));
     			   break;
     		   case 2:
+    			   System.out.println("=".repeat(50));
     			   System.out.println("Enter book ID: ");
-    			   int bookId = sc.nextInt();
-				   
+    			   bookId = sc.nextInt();
+    			   
 				   service.search(bookId).ifPresentOrElse(b -> {
 					   System.out.println("Book Found");
 					   System.out.println("-".repeat(30));
@@ -69,17 +74,24 @@ public class LibraryBookManagementApp {
 					   System.out.println("price: " + b.getPrice());
 					   System.out.println("Available: " + b.getAvailable());
 				   }, ()-> System.out.println("Book not found"));
+				   System.out.println("=".repeat(50));
     			   break;
     		   case 3:
+    			   System.out.println("=".repeat(50));
     			   System.out.println("Enter Book Id: ");
     			   bookId = sc.nextInt();
-    			   
+    			   		   
     			   System.out.println("Enter New Price:");
     			   double newPrice = sc.nextDouble();
     			   
+    			   service.search(bookId).ifPresent(b -> System.out.println("Old Price: "+b.getPrice()));
     			   service.updateBookPrice(bookId, newPrice);
+    			   System.out.println("New Price: " + newPrice);
+    			   System.out.println("Book Updated Successfully");
+    			   System.out.println("=".repeat(50));
     			   break;
     		   case 4:
+    			   System.out.println("=".repeat(50));
     			   System.out.println("Enter Book Id: ");
     			   bookId = sc.nextInt();
     			   
@@ -88,19 +100,18 @@ public class LibraryBookManagementApp {
     			   String option = sc.next();
     			   if(option.equalsIgnoreCase("yes")) {
     				   service.delete(bookId);
+    				   System.out.println("Book Deleted Successfully"); 
     			   }
     			   else {
     				   System.out.println("Book Deletion Cancelled");
     			   }
+    			   System.out.println("=".repeat(50));
     			   break;
     		   case 5:
-    			   break;
+    			   return;
     			default:
     				System.out.println("Invalid choice !!");
     		   }
-    		   if(choice == 5) {
-    			   break;
-    		   }  
     	   }
     	   
        }

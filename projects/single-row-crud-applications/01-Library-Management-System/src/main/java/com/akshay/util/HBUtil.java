@@ -28,11 +28,7 @@ public final class HBUtil {
 	}
 	
 	public static Session getSession() {
-		Session session = null;
-		if(FACTORY != null) {
-			session = FACTORY.openSession();
-		}
-		return session;
+		return FACTORY.openSession();
 	}
 	
 	/**

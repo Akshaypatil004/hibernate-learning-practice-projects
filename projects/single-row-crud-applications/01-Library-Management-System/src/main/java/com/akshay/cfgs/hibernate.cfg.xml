@@ -9,7 +9,7 @@
 		<property name="connection.username">root</property>
 		<property name="connection.password">Root1234</property>
 		
-		<property name="format_sql">true</property>
+		<property name="highlight_sql">true</property>
 		<property name="hbm2ddl.auto">update</property>
 		
 		<mapping class="com.akshay.entity.Book"/>
